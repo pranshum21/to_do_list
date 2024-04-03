@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do-List</title>
+    <style>
+        .body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .text, .date {
+            padding: 6px 9px;
+            font-size: 15px;
+            margin-right: 5px;
+        }
+        .add {
+            background-color: green;
+            padding: 9px 38px;
+            font-size: 15px;
+            border: none;
+            color: white;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .space {
+            display: grid;
+            margin-top: 15px;
+            grid-template-columns: 220px 158px 100px;
+            row-gap: 20px;
+            position: absolute;
+        }
+        .button {
+            height: 40px;
+            padding: 5px 20px;
+            padding-bottom: 10px; 
+            background-color: rgb(118, 6, 6);
+            color: white;
+            border: none;
+            vertical-align: middle;
+            cursor: pointer;
+            margin-left: 105px;
+            margin-top: -95px ; 
+
+        }
+        .button1 {
+            height: 40px;
+            padding: 10px 20px; 
+            background-color: rgb(118, 6, 6);
+            color: white;
+            border: none;
+            vertical-align: middle;
+            cursor: pointer;
+            margin-right: 0px; 
+            margin-bottom: 20px;
+        }
+        .button-div {
+            position: relative;
+            justify-content: center;
+        }
+        .p {
+            font-size: 18px;
+            padding-top: 10px;
+        }
+        .done {
+            background-color: lightgreen; 
+        }
+    </style>
+</head>
+<body>
+    <h2>Todo List</h2>
+    <input class="text" placeholder="Todo name">
+    <input class="date" type="date">
+    <button class="add" onclick="arrayupdate(); document.querySelector('.text').value=''; document.querySelector('.date').value='';">Add</button>
+    <button class="add" onclick="htmlprint();">Show My Todo List</button>
+    <div class="space"></div>
+    <script>
+        let todolist = JSON.parse(localStorage.getItem('todolist')) || [];
+        let todo, date;
+        let html = '';
+
+        function htmlprint() {
+            localStorage.setItem('todolist', JSON.stringify(todolist));
+            html = '';
+            for (let i = 0; i < todolist.length; i++) {
+                todo = todolist[i].todo;
+                date = todolist[i].date;
+                let doneClass = todolist[i].done ? 'done' : ''; 
+                html += `<div class="p ${doneClass}">${todo}</div><div class="p ${doneClass}">${date}</div><div class='button-div'><button class="button1" onclick='todolist.splice(${i},1); htmlprint();'>Delete</button><button class="button" onclick='markDone(${i});'>Mark Done</button></div>`;
+            }
+            document.querySelector('.space').innerHTML = html;
+        }
+
+        function arrayupdate() {
+            todo = document.querySelector('.text').value;
+            date = document.querySelector('.date').value;
+            todolist.push({
+                todo,
+                date,
+                done: false
+            });
+            localStorage.setItem('todolist', JSON.stringify(todolist));
+            htmlprint();
+        }
+
+        function markDone(index) {
+            if(todolist[index].done) {todolist[index].done = false;
+            }
+           else  todolist[index].done = true;
+            localStorage.setItem('todolist', JSON.stringify(todolist));
+            htmlprint();
+        }
+    </script>
+</body>
+</html>
